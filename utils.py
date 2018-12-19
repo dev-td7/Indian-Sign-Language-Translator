@@ -17,18 +17,15 @@ def segment(src_img):
     blurred_img = cv2.GaussianBlur(src_img,(5,5),0)
     blurred_img = cv2.medianBlur(blurred_img,5)
     
-    segmented_img = blurred_img.copy()
-    blurred_img = blurred_img.tolist()
-
+    ycrcb_image = cv2.cvtColor(blurred_img, cv2.COLOR_BGR2YCR_CB)
     lower = array([0,140,60], uint8)
     upper = array([255,180,127], uint8)
-    mask = cv2.inRange(src_img, lower, upper)
+    mask = cv2.inRange(ycrcb_image, lower, upper)
 
     open_kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (5,5))
     close_kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (7,7))
-    mask = cv2.morphologyEx(segmented_img, cv2.MORPH_OPEN, open_kernel)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, open_kernel)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, close_kernel)
-    mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 
     return mask
 
